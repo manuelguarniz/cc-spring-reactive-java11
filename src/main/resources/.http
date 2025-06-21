@@ -2,5 +2,41 @@
 @baseUrl = http://localhost:8080
 @contentType = application/json
 
-# Health check
+### Health check
 GET {{baseUrl}}/api/health
+
+### List all students
+GET {{baseUrl}}/api/students
+
+### response example
+#[
+#{
+#    "id": "823a77ec-2b6f-4aed-b48a-2eb94577a2d9",
+#    "name": "Manuel",
+#    "lastName": "Guarniz",
+#    "age": "30",
+#    "status": "ACTIVE"
+#}
+#]
+
+### Create a new student
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+
+{
+    "name": "Esteban",
+    "lastName": "Cruz",
+    "age": 29,
+    "status": "ACTIVE"
+}
+
+### exception response example
+#{
+#  "message": "executeMany; bad SQL grammar [INSERT INTO student (name, last_name, age, status) VALUES ($1, $2, $3, $4)]; nested exception is io.r2dbc.postgresql.ExceptionFactory$PostgresqlBadGrammarException: [42804] column \"age\" is of type smallint but expression is of type character varying"
+#}
+
+### successfully created student
+#HTTP/1.1 201 Created
+#content-length: 0
+#
+#<Response body is empty>
