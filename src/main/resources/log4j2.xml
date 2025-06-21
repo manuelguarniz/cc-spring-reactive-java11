@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="name">cc-college-api</Property>
+        <Property name="path">${env:HOME}/logs/cc-college-api</Property>
+        <Property name="pattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg{nolookups}%n</Property>
+        <Property name="asyncLoggerRingBufferSize">512</Property>
+        <Property name="asyncLoggerWaitStrategy">Yield</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="${pattern}" />
+        </Console>
+
+        <RollingFile name="logfile" fileName="${path}/${name}.log"
+            filePattern="${path}/${name}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${pattern}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${path}">
+                    <IfFileName glob="${name}-*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- Async Appender for better performance -->
+        <Async name="AsyncLogfile">
+            <AppenderRef ref="logfile" />
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <!-- Async Logger for application packages -->
+        <AsyncLogger name="com.scotiabank.cc.mscollegeapi" level="info" additivity="false">
+            <AppenderRef ref="AsyncLogfile" />
+            <AppenderRef ref="stdout" />
+        </AsyncLogger>
+
+        <!-- Root logger -->
+        <Root level="info">
+            <AppenderRef ref="stdout" />
+        </Root>
+    </Loggers>
+</Configuration>
