@@ -1,0 +1,14 @@
+.git
+.gitignore
+.idea
+build
+.gradle
+.settings
+.project
+bin
+*~
+*.swp
+*.iml
+*.ipr
+*.iws
+.DS_Store 
