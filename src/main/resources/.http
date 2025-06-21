@@ -1,0 +1,6 @@
+# HTTP variables
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+# Health check
+GET {{baseUrl}}/api/health
