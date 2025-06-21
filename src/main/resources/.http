@@ -40,3 +40,26 @@ Content-Type: {{contentType}}
 #content-length: 0
 #
 #<Response body is empty>
+
+### Create an invalid new student
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+
+{
+    "name": "",
+    "lastName": "Cruz",
+    "age": 29,
+    "status": "ACTIVE"
+}
+
+### exception response example
+#HTTP/1.1 400 Bad Request
+#{
+#  "error": "Validation Error",
+#  "message": "Los datos proporcionados no son válidos",
+#  "errors": {
+#    "name": "El nombre solo puede contener letras y espacios"
+#  },
+#  "timestamp": "2025-06-21T11:22:31.908152",
+#  "status": 400
+#}

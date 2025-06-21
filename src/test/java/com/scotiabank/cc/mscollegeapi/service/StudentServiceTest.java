@@ -28,7 +28,7 @@ class StudentServiceTest {
     private StudentService studentService;
 
     private Student student;
-    private StudentDTO studentDTO;
+    private StudentDTO createRequest;
 
     @BeforeEach
     void setUp() {
@@ -39,8 +39,7 @@ class StudentServiceTest {
         student.setAge((short) 20);
         student.setStatus(StatusEnum.ACTIVE.getValue());
 
-        studentDTO = StudentDTO.builder()
-                .id("1")
+        createRequest = StudentDTO.builder()
                 .name("Juan")
                 .lastName("Perez")
                 .age((short) 20)
@@ -52,7 +51,7 @@ class StudentServiceTest {
     void listStudents_returnsStudents() {
         when(studentRepository.findAll()).thenReturn(Flux.just(student));
         StepVerifier.create(studentService.listStudents())
-                .expectNext(studentDTO)
+                .expectNext(StudentDTO.fromEntity(student))
                 .verifyComplete();
     }
 
@@ -66,15 +65,15 @@ class StudentServiceTest {
     @Test
     void createStudent_success() {
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
-        StepVerifier.create(studentService.createStudent(studentDTO))
-                .expectNext(studentDTO)
+        StepVerifier.create(studentService.createStudent(createRequest))
+                .expectNext(StudentDTO.fromEntity(student))
                 .verifyComplete();
     }
 
     @Test
     void createStudent_error() {
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.error(new RuntimeException("DB error")));
-        StepVerifier.create(studentService.createStudent(studentDTO))
+        StepVerifier.create(studentService.createStudent(createRequest))
                 .expectError(DatabaseException.class)
                 .verify();
     }

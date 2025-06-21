@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    // Start Spring Boot dependencies
     implementation ('org.springframework.boot:spring-boot-starter-data-r2dbc') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
@@ -33,26 +34,38 @@ dependencies {
     implementation ('org.springframework.boot:spring-boot-starter-aop') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
+    implementation ('org.springframework.boot:spring-boot-starter-validation') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    // End Spring Boot dependencies
+
+    // Start Logging dependencies
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'com.lmax:disruptor:3.4.4'
+    // End Logging dependencies
+
     
-    // AspectJ dependencies
+    // Start AspectJ dependencies
     implementation 'org.aspectj:aspectjrt:1.9.19'
     implementation 'org.aspectj:aspectjweaver:1.9.19'
+    // End AspectJ dependencies
     
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.postgresql:r2dbc-postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // Start Test dependencies
     testImplementation ('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // End Test dependencies
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-//def void exclude(LinkedHashMap<String, String> stringStringLinkedHashMap) {}
+def void exclude(LinkedHashMap<String, String> stringStringLinkedHashMap) {}

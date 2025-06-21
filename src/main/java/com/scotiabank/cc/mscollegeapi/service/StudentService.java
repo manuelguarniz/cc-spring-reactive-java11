@@ -21,19 +21,18 @@ public class StudentService {
         return studentRepository.findAll().map(StudentDTO::fromEntity);
     }
 
-    public Mono<StudentDTO> createStudent(StudentDTO student) {
-        Student studentEntity = new Student();
-        studentEntity.setName(student.getName());
-        studentEntity.setLastName(student.getLastName());
-        studentEntity.setAge(student.getAge());
-        studentEntity.setStatus(student.getStatus().getValue());
-        Mono<Student> newStudent = studentRepository.save(studentEntity);
-        return newStudent.map(StudentDTO::fromEntity)
-                .doOnError(throwable -> {
-                    log.error("Error creating student: {}", throwable.getMessage());
-                })
-                .onErrorResume(throwable ->
-                        Mono.error(new DatabaseException("Error creating student")));
+    public Mono<StudentDTO> createStudent(StudentDTO request) {
+        Student student = new Student();
+        student.setName(request.getName().trim());
+        student.setLastName(request.getLastName().trim());
+        student.setAge(request.getAge());
+        student.setStatus(request.getStatus().getValue());
 
+        return studentRepository.save(student)
+                .map(StudentDTO::fromEntity)
+                .doOnSuccess(s -> log.info("Student created successfully: {}", s.getId()))
+                .doOnError(e -> log.error("Error creating student: {}", e.getMessage()))
+                .onErrorResume(throwable -> Mono
+                        .error(new DatabaseException("Error creating student: " + throwable.getMessage())));
     }
 }
