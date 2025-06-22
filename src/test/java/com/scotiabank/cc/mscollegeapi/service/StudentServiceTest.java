@@ -3,6 +3,7 @@ package com.scotiabank.cc.mscollegeapi.service;
 import com.scotiabank.cc.mscollegeapi.dto.StudentDTO;
 import com.scotiabank.cc.mscollegeapi.entity.Student;
 import com.scotiabank.cc.mscollegeapi.enums.StatusEnum;
+import com.scotiabank.cc.mscollegeapi.exception.BusinessException;
 import com.scotiabank.cc.mscollegeapi.exception.DatabaseException;
 import com.scotiabank.cc.mscollegeapi.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,17 +65,60 @@ class StudentServiceTest {
     }
 
     @Test
-    void createStudent_success() {
+    void createStudent_withoutId_success() {
+        when(studentRepository.findById(anyString())).thenReturn(Mono.empty());
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
+
         StepVerifier.create(studentService.createStudent(createRequest))
                 .expectNext(StudentDTO.fromEntity(student))
                 .verifyComplete();
     }
 
     @Test
-    void createStudent_error() {
-        when(studentRepository.save(any(Student.class))).thenReturn(Mono.error(new RuntimeException("DB error")));
+    void createStudent_withId_success() {
+        createRequest.setId("custom-id");
+        when(studentRepository.findById("custom-id")).thenReturn(Mono.empty());
+        when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
+
         StepVerifier.create(studentService.createStudent(createRequest))
+                .expectNext(StudentDTO.fromEntity(student))
+                .verifyComplete();
+    }
+
+    @Test
+    void createStudent_withExistingId_throwsBusinessException() {
+        createRequest.setId("existing-id");
+        when(studentRepository.findById("existing-id")).thenReturn(Mono.just(student));
+
+        StepVerifier.create(studentService.createStudent(createRequest))
+                .expectError(BusinessException.class)
+                .verify();
+    }
+
+    @Test
+    void createStudent_error() {
+        when(studentRepository.findById(anyString())).thenReturn(Mono.empty());
+        when(studentRepository.save(any(Student.class))).thenReturn(Mono.error(new RuntimeException("DB error")));
+
+        StepVerifier.create(studentService.createStudent(createRequest))
+                .expectError(DatabaseException.class)
+                .verify();
+    }
+
+    @Test
+    void getStudentById_success() {
+        when(studentRepository.findById("1")).thenReturn(Mono.just(student));
+
+        StepVerifier.create(studentService.getStudentById("1"))
+                .expectNext(StudentDTO.fromEntity(student))
+                .verifyComplete();
+    }
+
+    @Test
+    void getStudentById_notFound() {
+        when(studentRepository.findById("999")).thenReturn(Mono.empty());
+
+        StepVerifier.create(studentService.getStudentById("999"))
                 .expectError(DatabaseException.class)
                 .verify();
     }
