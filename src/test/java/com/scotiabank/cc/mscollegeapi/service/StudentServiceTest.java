@@ -16,6 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -31,11 +33,13 @@ class StudentServiceTest {
 
     private Student student;
     private StudentDTO createRequest;
+    private UUID testId;
 
     @BeforeEach
     void setUp() {
+        testId = UUID.randomUUID();
         student = new Student();
-        student.setId("1");
+        student.setId(testId);
         student.setName("Juan");
         student.setLastName("Perez");
         student.setAge((short) 20);
@@ -66,7 +70,7 @@ class StudentServiceTest {
 
     @Test
     void createStudent_withoutId_success() {
-        when(studentRepository.findById(anyString())).thenReturn(Mono.empty());
+        when(studentRepository.findById(any(UUID.class))).thenReturn(Mono.empty());
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
 
         StepVerifier.create(studentService.createStudent(createRequest))
@@ -76,8 +80,8 @@ class StudentServiceTest {
 
     @Test
     void createStudent_withId_success() {
-        createRequest.setId("custom-id");
-        when(studentRepository.findById("custom-id")).thenReturn(Mono.empty());
+        createRequest.setId(testId.toString());
+        when(studentRepository.findById(testId)).thenReturn(Mono.empty());
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
 
         StepVerifier.create(studentService.createStudent(createRequest))
@@ -87,8 +91,17 @@ class StudentServiceTest {
 
     @Test
     void createStudent_withExistingId_throwsBusinessException() {
-        createRequest.setId("existing-id");
-        when(studentRepository.findById("existing-id")).thenReturn(Mono.just(student));
+        createRequest.setId(testId.toString());
+        when(studentRepository.findById(testId)).thenReturn(Mono.just(student));
+
+        StepVerifier.create(studentService.createStudent(createRequest))
+                .expectError(BusinessException.class)
+                .verify();
+    }
+
+    @Test
+    void createStudent_withInvalidUUID_throwsBusinessException() {
+        createRequest.setId("invalid-uuid");
 
         StepVerifier.create(studentService.createStudent(createRequest))
                 .expectError(BusinessException.class)
@@ -97,7 +110,7 @@ class StudentServiceTest {
 
     @Test
     void createStudent_error() {
-        when(studentRepository.findById(anyString())).thenReturn(Mono.empty());
+        when(studentRepository.findById(any(UUID.class))).thenReturn(Mono.empty());
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.error(new RuntimeException("DB error")));
 
         StepVerifier.create(studentService.createStudent(createRequest))
@@ -107,19 +120,27 @@ class StudentServiceTest {
 
     @Test
     void getStudentById_success() {
-        when(studentRepository.findById("1")).thenReturn(Mono.just(student));
+        when(studentRepository.findById(testId)).thenReturn(Mono.just(student));
 
-        StepVerifier.create(studentService.getStudentById("1"))
+        StepVerifier.create(studentService.getStudentById(testId.toString()))
                 .expectNext(StudentDTO.fromEntity(student))
                 .verifyComplete();
     }
 
     @Test
     void getStudentById_notFound() {
-        when(studentRepository.findById("999")).thenReturn(Mono.empty());
+        UUID notFoundId = UUID.randomUUID();
+        when(studentRepository.findById(notFoundId)).thenReturn(Mono.empty());
 
-        StepVerifier.create(studentService.getStudentById("999"))
+        StepVerifier.create(studentService.getStudentById(notFoundId.toString()))
                 .expectError(DatabaseException.class)
+                .verify();
+    }
+
+    @Test
+    void getStudentById_invalidUUID_throwsBusinessException() {
+        StepVerifier.create(studentService.getStudentById("invalid-uuid"))
+                .expectError(BusinessException.class)
                 .verify();
     }
 }

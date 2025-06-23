@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -37,11 +38,11 @@ public class StudentDTO {
 
   public static StudentDTO fromEntity(Student student) {
     return StudentDTO.builder()
-            .id(student.getId())
-            .name(student.getName())
-            .lastName(student.getLastName())
-            .age(student.getAge())
-            .status(StatusEnum.fromValue(student.getStatus()))
-            .build();
+        .id(student.getId() != null ? student.getId().toString() : null)
+        .name(student.getName())
+        .lastName(student.getLastName())
+        .age(student.getAge())
+        .status(StatusEnum.fromValue(student.getStatus()))
+        .build();
   }
 }

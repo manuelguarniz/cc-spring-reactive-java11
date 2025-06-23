@@ -9,15 +9,20 @@ GET {{baseUrl}}/api/health
 GET {{baseUrl}}/api/students
 
 ### response example
-#[
-#{
-#    "id": "823a77ec-2b6f-4aed-b48a-2eb94577a2d9",
-#    "name": "Manuel",
-#    "lastName": "Guarniz",
-#    "age": "30",
-#    "status": "ACTIVE"
-#}
-#]
+# HTTP/1.1 200 OK
+# transfer-encoding: chunked
+# content-type: application/json
+# connection: close
+
+# [
+#   {
+#     "id": "8c1f58c9-c9d9-418b-a8b1-b91522ca81a9",
+#     "name": "Manuel",
+#     "lastName": "Guarniz",
+#     "age": 30,
+#     "status": "ACTIVE"
+#   }
+# ]
 
 ### Create a new student
 POST {{baseUrl}}/api/students
@@ -62,4 +67,49 @@ Content-Type: {{contentType}}
 #  },
 #  "timestamp": "2025-06-21T11:22:31.908152",
 #  "status": 400
+#}
+
+
+### Create a new student with custom id
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+
+{
+    "id": "d192cc90-0623-446a-8c73-07624dbedaac",
+    "name": "Jorgito",
+    "lastName": "Luna",
+    "age": 28,
+    "status": "ACTIVE"
+}
+
+### success response with custom id
+#HTTP/1.1 201 Created
+#{
+#  "id": "d192cc90-0623-446a-8c73-07624dbedaac",
+#  "name": "Jorgito",
+#  "lastName": "Luna",
+#  "age": 28,
+#  "status": "ACTIVE"
+#}
+
+### Create an exists new student
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+
+{
+    "id": "d192cc90-0623-446a-8c73-07624dbedaac",
+    "name": "Mario",
+    "lastName": "Vargas",
+    "age": 27,
+    "status": "ACTIVE"
+}
+
+### exception response example
+#HTTP/1.1 409 Conflict
+#{
+#  "timestamp": "2025-06-23T00:01:51.421429",
+#  "status": 409,
+#  "error": "Business Validation Error",
+#  "message": "No se puede crear un estudiante con el ID 'd192cc90-0623-446a-8c73-07624dbedaac' porque ya existe",
+#  "errors": null
 #}
