@@ -61,7 +61,7 @@ public class StudentService {
         student.setAge(request.getAge());
         student.setStatus(request.getStatus().getValue());
 
-        return studentRepository.insertWithCustomId(student)
+        return studentRepository.insertWithCustomId(student, Student.class)
                 .map(StudentDTO::fromEntity)
                 .doOnSuccess(s -> log.info("Student created successfully with custom ID: {}", s.getId()))
                 .doOnError(e -> log.error("Error creating student with custom ID: {}", e.getMessage()))
