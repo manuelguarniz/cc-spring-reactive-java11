@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @JsonIgnoreProperties({ "cause", "stackTrace", "suppressed", "localizedMessage" })
 public class BusinessException extends RuntimeException {
-    HttpStatus httpStatus;
+    private HttpStatus httpStatus;
     public BusinessException(String message) {
         super(message);
     }

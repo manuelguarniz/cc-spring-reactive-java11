@@ -32,20 +32,6 @@ class StudentControllerTest {
     private StudentService studentService;
 
     @Test
-    void listStudents_shouldReturnConflict_whenNoStudentsExist() {
-        when(studentService.listStudents()).thenReturn(Flux.empty());
-
-        webTestClient.get()
-                .uri("/api/students")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isNoContent()
-                .expectBody()
-                .jsonPath("$.error").isEqualTo("Business Validation Error")
-                .jsonPath("$.message").isEqualTo("No students found");
-    }
-
-    @Test
     void listStudents_shouldReturnStudents_whenStudentsExist() {
         List<StudentDTO> students = Arrays.asList(
                 createStudentDTO("Juan", "Perez", (short) 25),
@@ -181,6 +167,7 @@ class StudentControllerTest {
                 .expectStatus().isBadRequest()
                 .expectBody()
                 .jsonPath("$.error").isEqualTo("Business Validation Error")
+                .jsonPath("$.message").exists()
                 .jsonPath("$.message").isEqualTo("Duplicate Id Error");
 
     }

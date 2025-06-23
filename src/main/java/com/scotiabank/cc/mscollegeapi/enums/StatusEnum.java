@@ -5,7 +5,7 @@ import java.util.Arrays;
 public enum StatusEnum {
     ACTIVE("active"),
     INACTIVE("inactive"),
-    SUSPENDED("suspended");
+    ;
 
     private final String status;
 
@@ -21,6 +21,6 @@ public enum StatusEnum {
         return Arrays.stream(StatusEnum.values())
                 .filter(s -> status.equalsIgnoreCase(s.status))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + status));
+                .orElseThrow(() -> new IllegalArgumentException("Estado desconocido: " + status));
     }
 }

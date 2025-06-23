@@ -47,7 +47,7 @@ public class StudentService {
             } catch (IllegalArgumentException e) {
                 String errorMessage = String.format("El ID '%s' no es un UUID válido", studentId);
                 log.warn("Invalid UUID format: {}", studentId);
-                return Mono.error(new BusinessException(errorMessage));
+                return Mono.error(new BusinessException(errorMessage, HttpStatus.BAD_REQUEST));
             }
         } else {
             return createNewStudentWithGeneratedId(request);
@@ -67,7 +67,7 @@ public class StudentService {
                 .doOnSuccess(s -> log.info("Student created successfully with custom ID: {}", s.getId()))
                 .doOnError(e -> log.error("Error creating student with custom ID: {}", e.getMessage()))
                 .onErrorResume(throwable -> Mono
-                        .error(new DatabaseException("Error creating student: " + throwable.getMessage())));
+                        .error(new DatabaseException("Error al crear estudiante: " + throwable.getMessage())));
     }
 
     private Mono<StudentDTO> createNewStudentWithGeneratedId(StudentDTO request) {
@@ -82,7 +82,7 @@ public class StudentService {
                 .doOnSuccess(s -> log.info("Student created successfully with generated ID: {}", s.getId()))
                 .doOnError(e -> log.error("Error creating student: {}", e.getMessage()))
                 .onErrorResume(throwable -> Mono
-                        .error(new DatabaseException("Error creating student: " + throwable.getMessage())));
+                        .error(new DatabaseException("Error al crear estudiante: " + throwable.getMessage())));
     }
 
     public Mono<StudentDTO> getStudentById(String id) {
@@ -90,13 +90,13 @@ public class StudentService {
             UUID uuid = UUID.fromString(id);
             return studentRepository.findById(uuid)
                     .map(StudentDTO::fromEntity)
-                    .switchIfEmpty(Mono.error(new DatabaseException("Student not found with id: " + id)))
+                    .switchIfEmpty(Mono.error(new BusinessException("No se encontró estudiante con el ID: " + id, HttpStatus.NOT_FOUND)))
                     .doOnSuccess(s -> log.info("Student retrieved successfully: {}", s.getId()))
                     .doOnError(e -> log.error("Error retrieving student: {}", e.getMessage()));
         } catch (IllegalArgumentException e) {
             String errorMessage = String.format("El ID '%s' no es un UUID válido", id);
             log.warn("Invalid UUID format: {}", id);
-            return Mono.error(new BusinessException(errorMessage));
+            return Mono.error(new BusinessException(errorMessage, HttpStatus.BAD_REQUEST));
         }
     }
 }

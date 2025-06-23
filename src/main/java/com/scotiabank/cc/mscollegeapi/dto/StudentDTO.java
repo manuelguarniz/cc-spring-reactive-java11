@@ -25,7 +25,7 @@ public class StudentDTO {
 
   @NotBlank(message = "El apellido es obligatorio")
   @Size(min = 1, max = 250, message = "El apellido debe tener entre 1 y 250 caracteres")
-  @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$", message = "El apellido solo puede contener letras y espacios")
+  @Pattern(regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\\s]+$", message = "El apellido solo puede contener letras, números y espacios")
   private String lastName;
 
   @NotNull(message = "La edad es obligatoria")

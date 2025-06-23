@@ -30,11 +30,11 @@ public class StudentController {
     @Operation(summary = "Listar estudiantes", description = "Obtiene la lista de todos los estudiantes")
     public Flux<StudentDTO> listStudents() {
         return studentService
-                .listStudents()
-                .switchIfEmpty(Flux.error(new BusinessException("No students found", HttpStatus.NO_CONTENT)));
+                .listStudents();
     }
 
     @PostMapping
+    @Operation(summary = "Registrar estudiantes", description = "Registra estudiantes con o sin id (UUID) personalizado")
     public Mono<ResponseEntity<Object>> createStudent(@Valid @RequestBody StudentDTO request) {
         return studentService
                 .createStudent(request)

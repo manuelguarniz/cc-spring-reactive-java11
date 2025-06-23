@@ -21,17 +21,14 @@ public class OpenApiConfig {
             .description("API para gestión de estudiantes del sistema universitario")
             .version("1.0.0")
             .contact(new Contact()
-                .name("Scotiabank CC Team")
-                .email("cc-team@scotiabank.com"))
+                .name("Manuel Guarniz - Scotiabank Code Challenge")
+                .email("cruzemg95@gmail.com"))
             .license(new License()
                 .name("MIT License")
                 .url("https://opensource.org/licenses/MIT")))
         .servers(List.of(
             new Server()
                 .url("http://localhost:8080")
-                .description("Servidor de desarrollo"),
-            new Server()
-                .url("https://api-college.scotiabank.com")
-                .description("Servidor de producción")));
+                .description("Servidor de desarrollo")));
   }
 }

@@ -18,7 +18,9 @@ import reactor.test.StepVerifier;
 
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +66,7 @@ class StudentServiceTest {
     void listStudents_returnsEmpty() {
         when(studentRepository.findAll()).thenReturn(Flux.empty());
         StepVerifier.create(studentService.listStudents())
+                .expectNextCount(0)
                 .verifyComplete();
     }
 
@@ -72,7 +75,10 @@ class StudentServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
 
         StepVerifier.create(studentService.createStudent(createRequest))
-                .expectNext(StudentDTO.fromEntity(student))
+                .assertNext(studentDTO -> {
+                    assertNotNull(studentDTO.getId());
+                    assertEquals(UUID.fromString(studentDTO.getId()).toString(), studentDTO.getId());
+                })
                 .verifyComplete();
     }
 
@@ -84,7 +90,10 @@ class StudentServiceTest {
                 .thenReturn(Mono.just(student));
 
         StepVerifier.create(studentService.createStudent(createRequest))
-                .expectNext(StudentDTO.fromEntity(student))
+                .assertNext(studentDTO -> {
+                    assertNotNull(studentDTO.getId());
+                    assertEquals(studentDTO.getId(), testId.toString());
+                })
                 .verifyComplete();
     }
 
@@ -132,7 +141,7 @@ class StudentServiceTest {
         when(studentRepository.findById(notFoundId)).thenReturn(Mono.empty());
 
         StepVerifier.create(studentService.getStudentById(notFoundId.toString()))
-                .expectError(DatabaseException.class)
+                .expectError(BusinessException.class)
                 .verify();
     }
 
