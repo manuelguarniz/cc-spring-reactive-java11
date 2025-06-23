@@ -3,6 +3,8 @@ package com.scotiabank.cc.mscollegeapi.controller;
 import com.scotiabank.cc.mscollegeapi.dto.StudentDTO;
 import com.scotiabank.cc.mscollegeapi.exception.BusinessException;
 import com.scotiabank.cc.mscollegeapi.service.StudentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -19,11 +21,13 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/students")
 @Validated
+@Tag(name = "Students", description = "API para gestión de estudiantes")
 public class StudentController {
 
     private final StudentService studentService;
 
     @GetMapping
+    @Operation(summary = "Listar estudiantes", description = "Obtiene la lista de todos los estudiantes")
     public Flux<StudentDTO> listStudents() {
         return studentService
                 .listStudents()
