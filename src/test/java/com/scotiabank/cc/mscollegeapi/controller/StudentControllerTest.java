@@ -3,11 +3,13 @@ package com.scotiabank.cc.mscollegeapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scotiabank.cc.mscollegeapi.dto.StudentDTO;
 import com.scotiabank.cc.mscollegeapi.enums.StatusEnum;
+import com.scotiabank.cc.mscollegeapi.exception.BusinessException;
 import com.scotiabank.cc.mscollegeapi.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
@@ -162,6 +164,25 @@ class StudentControllerTest {
                 .expectBody()
                 .jsonPath("$.error").isEqualTo("Validation Error")
                 .jsonPath("$.errors.status").exists();
+    }
+
+    @Test
+    void createStudent_withDuplicateId_shouldReturnBusinessException() {
+        StudentDTO student = createStudentDTO("Juan", "Perez", (short) 17);
+
+        when(studentService.createStudent(any(StudentDTO.class)))
+                .thenReturn(Mono.error(new BusinessException("Duplicate Id Error", HttpStatus.BAD_REQUEST)));
+
+        webTestClient.post()
+                .uri("/api/students")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(student), StudentDTO.class)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.error").isEqualTo("Business Validation Error")
+                .jsonPath("$.message").isEqualTo("Duplicate Id Error");
+
     }
 
     private StudentDTO createStudentDTO(String name, String lastName, Short age) {

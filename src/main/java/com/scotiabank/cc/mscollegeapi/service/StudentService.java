@@ -8,6 +8,7 @@ import com.scotiabank.cc.mscollegeapi.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,7 +39,7 @@ public class StudentService {
                                 String errorMessage = String.format(
                                         "No se puede crear un estudiante con el ID '%s' porque ya existe", studentId);
                                 log.warn("Business rule violation: {}", errorMessage);
-                                return Mono.error(new BusinessException(errorMessage));
+                                return Mono.error(new BusinessException(errorMessage, HttpStatus.BAD_REQUEST));
                             } else {
                                 return createNewStudentWithCustomId(request, uuid);
                             }
