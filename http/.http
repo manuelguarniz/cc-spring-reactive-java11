@@ -113,3 +113,15 @@ Content-Type: {{contentType}}
 #  "message": "No se puede crear un estudiante con el ID 'd192cc90-0623-446a-8c73-07624dbedaac' porque ya existe",
 #  "errors": null
 #}
+
+### Create an exists new student
+POST {{baseUrl}}/api/students
+Content-Type: {{contentType}}
+
+{
+    "id": "07624dbedavv",
+    "name": "Loco",
+    "lastName": "Vargas",
+    "age": 26,
+    "status": "ACTIVE"
+}

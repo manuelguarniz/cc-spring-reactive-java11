@@ -27,15 +27,15 @@ public class StudentController {
     public Flux<StudentDTO> listStudents() {
         return studentService
                 .listStudents()
-                .switchIfEmpty(Flux.error(new BusinessException("No students found")));
+                .switchIfEmpty(Flux.error(new BusinessException("No students found", HttpStatus.NO_CONTENT)));
     }
 
     @PostMapping
-    public Mono<ResponseEntity<StudentDTO>> createStudent(@Valid @RequestBody StudentDTO request) {
+    public Mono<ResponseEntity<Object>> createStudent(@Valid @RequestBody StudentDTO request) {
         return studentService
                 .createStudent(request)
-                .map(savedStudent -> ResponseEntity.status(HttpStatus.CREATED).body(savedStudent))
                 .doOnSuccess(
-                        response -> log.info("Studiante creado con éxito : status code: {}", response.getStatusCode()));
+                        response -> log.info("Studiante creado con éxito : id: {}", response.getId()))
+                .map(savedStudent -> ResponseEntity.status(HttpStatus.CREATED).build());
     }
 }

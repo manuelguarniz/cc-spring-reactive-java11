@@ -38,15 +38,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(BusinessException.class)
   public ResponseEntity<APIErrorDTO> handleBusinessException(BusinessException ex) {
+    HttpStatus status = ex.getHttpStatus() == null ? HttpStatus.CONFLICT : ex.getHttpStatus();
     APIErrorDTO errorResponse = APIErrorDTO.builder()
         .timestamp(LocalDateTime.now())
-        .status(HttpStatus.CONFLICT.value())
+        .status(status.value())
         .error("Business Validation Error")
         .message(ex.getMessage())
         .build();
 
     log.warn("Business rule violation: {}", ex.getMessage());
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    return ResponseEntity.status(status).body(errorResponse);
   }
 
   @ExceptionHandler(DatabaseException.class)

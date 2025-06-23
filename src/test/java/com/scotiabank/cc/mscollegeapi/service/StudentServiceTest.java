@@ -18,8 +18,7 @@ import reactor.test.StepVerifier;
 
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,7 +69,6 @@ class StudentServiceTest {
 
     @Test
     void createStudent_withoutId_success() {
-        when(studentRepository.findById(any(UUID.class))).thenReturn(Mono.empty());
         when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
 
         StepVerifier.create(studentService.createStudent(createRequest))
@@ -79,10 +77,11 @@ class StudentServiceTest {
     }
 
     @Test
-    void createStudent_withId_success() {
+    void createStudent_withCustomId_success() {
         createRequest.setId(testId.toString());
         when(studentRepository.findById(testId)).thenReturn(Mono.empty());
-        when(studentRepository.save(any(Student.class))).thenReturn(Mono.just(student));
+        when(studentRepository.insertWithCustomId(any(Student.class), eq(Student.class)))
+                .thenReturn(Mono.just(student));
 
         StepVerifier.create(studentService.createStudent(createRequest))
                 .expectNext(StudentDTO.fromEntity(student))
@@ -110,8 +109,8 @@ class StudentServiceTest {
 
     @Test
     void createStudent_error() {
-        when(studentRepository.findById(any(UUID.class))).thenReturn(Mono.empty());
-        when(studentRepository.save(any(Student.class))).thenReturn(Mono.error(new RuntimeException("DB error")));
+        when(studentRepository.save(any(Student.class)))
+                .thenReturn(Mono.error(new RuntimeException("DB error")));
 
         StepVerifier.create(studentService.createStudent(createRequest))
                 .expectError(DatabaseException.class)
