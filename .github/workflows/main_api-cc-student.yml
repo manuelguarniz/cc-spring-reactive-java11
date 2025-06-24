@@ -34,7 +34,7 @@ jobs:
           path: "${{ github.workspace }}/build/libs/*.jar"
 
       - name: Remove plain jar
-        run: rm -f "${{ github.workspace }}/build/libs/*plain.jar"
+        run: rm -f "${{ github.workspace }}/build/libs/*-plain.jar"
 
   deploy:
     runs-on: ubuntu-latest
