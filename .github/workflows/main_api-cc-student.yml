@@ -27,14 +27,14 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
+      - name: Remove plain jar
+        run: rm -f "${{ github.workspace }}/build/libs/*-plain.jar"
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
           path: "${{ github.workspace }}/build/libs/*.jar"
-
-      - name: Remove plain jar
-        run: rm -f "${{ github.workspace }}/build/libs/*-plain.jar"
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,4 +62,4 @@ jobs:
         with:
           app-name: "api-cc-student"
           slot-name: "Production"
-          package: "*.jar"
+          package: "ms-college-api-*.jar"
