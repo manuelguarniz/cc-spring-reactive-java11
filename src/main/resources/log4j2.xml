@@ -36,7 +36,7 @@
 
     <Loggers>
         <!-- Async Logger for application packages -->
-        <AsyncLogger name="com.scotiabank.cc.mscollegeapi" level="info" additivity="false">
+        <AsyncLogger name="com.scotiabank.cc.mscollegeapi" level="info" additivity="true">
             <AppenderRef ref="AsyncLogfile" />
             <AppenderRef ref="stdout" />
         </AsyncLogger>
