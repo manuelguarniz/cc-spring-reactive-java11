@@ -5,20 +5,23 @@ networks:
     driver: bridge
 
 services:
-#  ms-college-api:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8080:8080"
-#    networks:
-#      - cc_scotiabank_network
-#    depends_on:
-#      - postgres
-#    environment:
-#      - SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/db_cc_college
-#      - SPRING_R2DBC_USERNAME=postgres
-#      - SPRING_R2DBC_PASSWORD=postgres
+  ms-college-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - cc_scotiabank_network
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/db_cc_college
+      - SPRING_R2DBC_USERNAME=postgres
+      - SPRING_R2DBC_PASSWORD=postgres
+      - LOG_PATH=/app/logs
+    volumes:
+      - ./logs:/app/logs
 
   postgres:
     image: postgres:16

@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="30">
     <Properties>
         <Property name="name">cc-college-api</Property>
-        <Property name="path">${env:HOME}/logs/cc-college-api</Property>
+        <Property name="path">${env:LOG_PATH:-${env:HOME}/logs/cc-college-api}</Property>
         <Property name="pattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg{nolookups}%n</Property>
         <Property name="asyncLoggerRingBufferSize">512</Property>
         <Property name="asyncLoggerWaitStrategy">Yield</Property>

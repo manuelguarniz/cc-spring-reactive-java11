@@ -125,3 +125,12 @@ Content-Type: {{contentType}}
     "age": 26,
     "status": "ACTIVE"
 }
+
+### response invalid ID exception
+#{
+#    "timestamp": "2025-06-23T23:30:59.679397",
+#    "status": 400,
+#    "error": "Business Validation Error",
+#    "message": "El ID '07624dbedavv' no es un UUID válido",
+#    "errors": null
+#}
