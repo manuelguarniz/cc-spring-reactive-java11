@@ -62,4 +62,4 @@ jobs:
         with:
           app-name: "api-cc-student"
           slot-name: "Production"
-          package: "ms-college-api-*.jar"
+          package: "*.jar"
