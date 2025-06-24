@@ -27,9 +27,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
-      - name: Remove plain jar
-        run: rm -f "${{ github.workspace }}/build/libs/*-plain.jar"
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
