@@ -6,6 +6,7 @@ import com.scotiabank.cc.mscollegeapi.enums.StatusEnum;
 import com.scotiabank.cc.mscollegeapi.exception.BusinessException;
 import com.scotiabank.cc.mscollegeapi.exception.DatabaseException;
 import com.scotiabank.cc.mscollegeapi.repository.StudentRepository;
+import com.scotiabank.cc.mscollegeapi.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,7 @@ class StudentServiceTest {
     private StudentRepository studentRepository;
 
     @InjectMocks
-    private StudentService studentService;
+    private StudentServiceImpl studentService;
 
     private Student student;
     private StudentDTO createRequest;
