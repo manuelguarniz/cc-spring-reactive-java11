@@ -1,7 +1,6 @@
 package com.scotiabank.cc.mscollegeapi.controller;
 
 import com.scotiabank.cc.mscollegeapi.dto.StudentDTO;
-import com.scotiabank.cc.mscollegeapi.exception.BusinessException;
 import com.scotiabank.cc.mscollegeapi.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

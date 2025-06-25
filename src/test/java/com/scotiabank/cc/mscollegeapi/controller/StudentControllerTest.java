@@ -1,6 +1,5 @@
 package com.scotiabank.cc.mscollegeapi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scotiabank.cc.mscollegeapi.dto.StudentDTO;
 import com.scotiabank.cc.mscollegeapi.enums.StatusEnum;
 import com.scotiabank.cc.mscollegeapi.exception.BusinessException;
